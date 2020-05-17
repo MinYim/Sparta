@@ -7,7 +7,7 @@
     <title>스파르타 | 2주차 숙제</title>
     <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Myeongjo&display=swap"
         rel="stylesheet">
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
         * {
             /* width: 1000px; */
@@ -39,9 +39,10 @@
         }
 
         .head {
-            font-size:xx-large;
+            font-size: xx-large;
             font-weight: bold;
         }
+
         .head_right {
             font-weight: normal;
             font-size: small;
@@ -68,13 +69,43 @@
     <script>
         function hit() {
 
-            if (customer_name='' || customer_option='' || customer_address='' || customer_phone='' ) {
-                alert('주문자 정보가 없어요');
+            let name = $('#customer_name').val();
+            let optionselec = $('#customer_option').val();
+            let address = $('#customer_address').val();
+            let phonenumber = $('#customer_phone').val();
+
+            if (name == '') {
+                alert('이름을 입력해주세요');
             } else {
-                alert('주문이 완료되었습니다.')
+                if (optionselec == '') {
+                    alert('옵션을 선택해주세요');
+                } else {
+                    if (address == '') {
+                        alert('주소를 입력해주세요');
+                    } else {
+                        if (phonenumber == '') {
+                            alert('전화번호를 입력해주세요');
+                        } else {
+                            alert('주문이 완료되었습니다.')
+                        }
+                    }
+                }
             }
-            
+
         }
+        $(document).ready(function () {
+            $('#currency_usdkrw').empty();
+            $.ajax({
+                type: "GET",
+                url: "https://api.manana.kr/exchange/rate.json",
+                data: {},
+                success: function (response) {
+                    let currency = response[1]['rate'];
+                    let temp_html = `<p> 원 달러 환율 : ${currency}</p>`
+                    $('#currency_usdkrw').append(temp_html);
+                }
+            })
+        });
     </script>
 </head>
 
@@ -92,26 +123,26 @@
         <div>
             <p>이건 엄청 비싼 차에요. 쉽게 구하고 싶어도 못구하는 차에요. 그래서 나도 못사고 있어요. 살 수 있는 방법을 알게 되면 나도 알려줘요.</p>
         </div>
-
+        <div id="currency_usdkrw" style="color: blue;"></div>
     </div>
     <div class="input">
         <h1>주문자 정보 넣는 곳</h1>
         <div class="form-group row">
             <label>주문자 성함:</label>
-            <input class="box" type="text" id="customer_name" placeholder="">
+            <input class="box" type="text" id="customer_name">
 
         </div>
         <div class="form-group row">
-            <label>수 량:</label>
+            <label>옵    션:</label>
             <select class="option" id="customer_option">
                 <option selected></option>
-                <option>못사</option>
-                <option>진짜 못사</option>
-                <option>못 살거래도 그러네</option>
+                <option>차량, 무옵션</option>
+                <option>차량, 전동 시트</option>
+                <option>차량, 전동 시트+HUD</option>
             </select>
         </div>
         <div class="form-group row">
-            <label>주 소:</label>
+            <label>주    소:</label>
             <input class="box" type="text" id="customer_address" placeholder="">
         </div>
         <div class="form-group row">
