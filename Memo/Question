@@ -1,0 +1,30 @@
+function sum(a,b) {
+    return a+b;
+}
+undefined
+sum(1,2)
+3
+sum(3,4);
+7
+// ; 는 언어마다 다름, html 과 java 는 사실 상관 없으나, python 의 경우는 있으면 안됨
+
+//  위에 저런 것에서 꼭 문장 끝에 ; 을 넣어줘야 하나? 안넣어주면 무슨 차이?
+
+function get_sum(n) {
+    let sum = 0
+    for (let i = 0; i < n; i++) {
+        sum += i;         // sum을 i만큼 증가시켜라. sum = sum + i 와 동일!
+    }
+    return sum
+}
+
+function get_sum(n) {
+    let sum = 0
+    for (let i = 0; i < n) {
+        sum += i;         // sum을 i만큼 증가시켜라. sum = sum + i 와 동일!
+        i++;
+    }
+    return sum
+}
+
+// 이렇게는 안되나??? = 이건 안됨, 기본 약속임
