@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- boostrap css -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- webpage title -->
+    <title>스파르타 | 2주차 숙제</title>
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <style>
+        * {
+            /* width: 1000px; */
+            /* margin: 10px auto; */
+            font-family: 'Black Han Sans', sans-serif;
+            font-family: 'Nanum Myeongjo', serif;
+        }
+
+        .head_image {
+            width: 500px;
+            margin: 10px auto;
+            /* margin: 10px auto; */
+        }
+
+        .box {
+            margin: 5px auto;
+            border-radius: 10px;
+        }
+
+        .option {
+            margin: 5px auto;
+            border-radius: 10px;
+        }
+
+        .input {
+            padding: 10px;
+            width: 500px;
+            margin: 10px auto;
+        }
+
+        .description {
+            width: 500px;
+            margin: 10px auto;
+        }
+
+        .head {
+            font-size: xx-large;
+            font-weight: bold;
+        }
+
+        .head_right {
+            font-weight: normal;
+            font-size: small;
+        }
+
+        .row {
+            width: 500px;
+        }
+
+        .order {
+            width: 100px;
+            height: 30px;
+            margin: 0px auto;
+            border-radius: 5px;
+            background-color: indianred;
+            color: ivory;
+        }
+
+        .table {
+            margin: 20px;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            $('#currency_usdkrw').empty();
+            $.ajax({
+                type: "GET",
+                url: "https://api.manana.kr/exchange/rate.json",
+                data: {},
+                success: function (response) {
+                    let currency = response[1]['rate'];
+                    let temp_currency = `<p> 원 달러 환율 : ${currency}</p>`
+                    $('#currency_usdkrw').append(temp_currency);
+                }
+            })
+            $('#order-list').empty();
+            // listing();
+        });
+
+        function hit() {
+
+            let name = $('#customer_name').val();
+            let optionselec = $('#customer_option').val();
+            let address = $('#customer_address').val();
+            let phonenumber = $('#customer_phone').val();
+
+            if (name == '') {
+                alert('이름을 입력해주세요');
+                return;
+            } else {
+                if (optionselec == '') {
+                    alert('옵션을 선택해주세요');
+                    return;
+                } else {
+                    if (address == '') {
+                        alert('주소를 입력해주세요');
+                        return;
+                    } else {
+                        if (phonenumber == '') {
+                            alert('전화번호를 입력해주세요');
+                            return;
+                        }
+                    }
+                }
+            }
+            inputing(name, optionselec, address, phonenumber);
+
+        }
+
+        function inputing(name, optionselec, address, phonenumber) {
+
+
+            $.ajax({
+                type: "POST",
+                url: "/myshop",
+                data: { 'name_give': name, 'option_give': optionselec, 'address_give': address, 'phone_give': phonenumber },
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        alert(response['msg']);
+                    }
+                }
+            })
+            listing();
+        }
+        function listing() {
+            $('#order-list').empty();
+            $.ajax({
+                type: "GET",
+                url: "/myshop",
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let orders = response['orders'];
+                        for (let i = 0; i < orders.length; i++) {
+                            let order = orders[i];
+                            let order_name = order['name'];
+                            let order_option = order['option'];
+                            let order_address = order['address'];
+                            let order_phone = order['phone']
+
+
+                            let temp_html = `  <tr>
+                                                    <th scope="row">${order_name}</th>
+                                                    <td>${order_option}</td>
+                                                    <td>${order_address}</td>
+                                                    <td>${order_phone}</td>
+                                                </tr>`
+                            $('#order-list').append(temp_html);
+                        }
+                    } else {
+                        alert('리뷰를 받아오지 못했습니다');
+                    }
+                }
+            })
+        }
+    </script>
+</head>
+
+<body>
+    <div>
+        <div class="head_image">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Ferrari_125_S_fl.jpg/1280px-Ferrari_125_S_fl.jpg"
+                class="head_image" alt="A generic square placeholder image with rounded corners in a figure.">
+        </div>
+    </div>
+    <div class="description">
+        <div class="head">
+            엄청 비싸고 보기 힘든 차 <a class="head_right">가격: $ N,000/개</a>
+        </div>
+        <div>
+            <p>이건 엄청 비싼 차에요. 쉽게 구하고 싶어도 못구하는 차에요. 그래서 나도 못사고 있어요. 살 수 있는 방법을 알게 되면 나도 알려줘요.</p>
+        </div>
+        <div id="currency_usdkrw" style="color: blue;"></div>
+    </div>
+    <div class="input">
+        <a class="head">주문자 정보 넣는 곳</a>
+        <div class="form-group row">
+            <label>주문자 성함:</label>
+            <input class="box" type="text" id="customer_name">
+
+        </div>
+        <div class="form-group row">
+            <label>옵 션:</label>
+            <select class="option" id="customer_option">
+                <option selected></option>
+                <option>차량, 무옵션</option>
+                <option>차량, 전동 시트</option>
+                <option>차량, 전동 시트+HUD</option>
+            </select>
+        </div>
+        <div class="form-group row">
+            <label>주 소:</label>
+            <input class="box" type="text" id="customer_address" placeholder="">
+        </div>
+        <div class="form-group row">
+            <label>전화번호:</label>
+            <input class="box" type="text" id="customer_phone" placeholder="">
+        </div>
+        <div class="order" onclick="hit()">
+            <button type="button" class="order">주문하기</button>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">성함</th>
+                    <th scope="col">옵션</th>
+                    <th scope="col">주소</th>
+                    <th scope="col">전화번호</th>
+                </tr>
+            </thead>
+            <tbody id="order-list">
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>
